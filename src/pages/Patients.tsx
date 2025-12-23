@@ -21,13 +21,12 @@ interface Patient {
   admissionDate: string;
   contact: { phone: string; address: string };
   status: "stable" | "critical" | "recovering";
-  ward?: string;
+
 }
 
 export default function Patients() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterWard, setFilterWard] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -108,16 +107,14 @@ export default function Patients() {
           <Button variant="ghost" size="icon" onClick={() => navigate(`/patients/${patient.id}`)}>
             <Eye className="h-4 w-4" />
           </Button>
-          {(!patient.ward || patient.ward === "N/A") && (
-            <Button
-              variant="ghost"
-              size="icon"
-              title="Admit Patient"
-              onClick={() => navigate(`/patients/${patient.id}?admit=1`)}
-            >
-              <UserPlus className="h-4 w-4" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Admit Patient"
+            onClick={() => navigate(`/patients/${patient.id}?admit=1`)}
+          >
+            <UserPlus className="h-4 w-4" />
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => navigate(`/edit-patient/${patient.id}`)}>
             <Edit className="h-4 w-4" />
           </Button>
@@ -176,10 +173,7 @@ export default function Patients() {
     setCurrentPage(1);
   };
 
-  const handleWardChange = (value: string) => {
-    setFilterWard(value);
-    setCurrentPage(1);
-  };
+
 
   const handleStatusChange = (value: string) => {
     setFilterStatus(value);
@@ -192,7 +186,7 @@ export default function Patients() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 md:mt-10">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Patient Records</h2>
@@ -219,19 +213,7 @@ export default function Patients() {
                 className="pl-10"
               />
             </div>
-            {/* <Select value={filterWard} onValueChange={handleWardChange}>
-              <SelectTrigger className="w-full md:w-[180px]">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Filter by ward" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Wards</SelectItem>
-                <SelectItem value="General">General</SelectItem>
-                <SelectItem value="ICU">ICU</SelectItem>
-                <SelectItem value="Pediatric">Pediatric</SelectItem>
-                <SelectItem value="Maternity">Maternity</SelectItem>
-              </SelectContent>
-            </Select>
+
             <Select value={filterStatus} onValueChange={handleStatusChange}>
               <SelectTrigger className="w-full md:w-[180px]">
                 <SelectValue placeholder="Filter by status" />
@@ -242,7 +224,7 @@ export default function Patients() {
                 <SelectItem value="critical">Critical</SelectItem>
                 <SelectItem value="recovering">Recovering</SelectItem>
               </SelectContent>
-            </Select> */}
+            </Select>
           </div>
 
           <DataTable

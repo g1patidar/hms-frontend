@@ -20,7 +20,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthed) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [isAuthed, navigate]);
 
@@ -30,7 +30,7 @@ export default function Login() {
       const action = await dispatch(loginThunk({ email, password }));
       if (loginThunk.fulfilled.match(action)) {
         toast({ title: "Welcome back!", description: `Signed in as ${action.payload.user.name}` });
-        navigate("/");
+        navigate("/dashboard");
       } else if (loginThunk.rejected.match(action)) {
         toast({ variant: "destructive", title: "Login failed", description: action.error.message || "Invalid credentials" });
       }

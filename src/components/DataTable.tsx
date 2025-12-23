@@ -86,8 +86,8 @@ export function DataTable<T>({
 
     return (
         <div className="w-full space-y-4">
-            <div className="rounded-md border">
-                <Table className="min-w-[800px]">
+            <div className="rounded-md border overflow-x-auto">
+                <Table className="md:min-w-[800px]">
                     <TableHeader>
                         <TableRow>
                             {columns.map((column) => (

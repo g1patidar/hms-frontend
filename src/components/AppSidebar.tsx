@@ -1,4 +1,4 @@
-import { Home, Users, UserPlus, Settings, Activity } from "lucide-react";
+import { Home, Users, UserPlus, Settings, Activity, Phone } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 
@@ -19,11 +19,15 @@ import {
 } from "@/components/ui/sidebar";
 
 const topMenu = [
-  { title: "Dashboard", url: "/", icon: Home },
+  { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Patients", url: "/patients", icon: Users },
   { title: "Add Patient", url: "/add-patient", icon: UserPlus },
-  { title: "Wards", url: "/wards", icon: Activity },
-  { title: "Settings", url: "/settings", icon: Settings }
+
+  { title: "Settings", url: "/settings", icon: Settings },
+  // Public Pages
+  { title: "Home Page", url: "/", icon: Home },
+  { title: "About Us", url: "/about", icon: Users },
+  { title: "Contact Us", url: "/contact", icon: Phone }
 ];
 
 export function AppSidebar() {
@@ -31,7 +35,7 @@ export function AppSidebar() {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
+    if (path === "/dashboard") return location.pathname === "/dashboard";
     return location.pathname.startsWith(path);
   };
 

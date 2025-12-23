@@ -15,8 +15,6 @@ export interface Patient {
     };
     assignedDoctor?: string;
     admissionType?: string;
-    ward?: string;
-    bedNumber?: string;
     createdAt: string;
 }
 
@@ -110,7 +108,7 @@ export const patientsApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: (result, error, id) => [{ type: 'Patient', id }, 'Patient', 'Dashboard'],
         }),
-        admitPatient: builder.mutation<{ data: Patient }, { id: string; assignedDoctor: string; ward: string; bedNumber: string; admissionType?: string }>({
+        admitPatient: builder.mutation<{ data: Patient }, { id: string; assignedDoctor: string; admissionType?: string }>({
             query: ({ id, ...body }) => ({
                 url: `/patients/${id}/admit`,
                 method: 'POST',

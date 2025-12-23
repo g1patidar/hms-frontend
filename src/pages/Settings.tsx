@@ -7,27 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { User, Bell, Lock, Building2, Loader2 } from "lucide-react";
-import { useGetHospitalQuery, useUpdateHospitalMutation } from "@/features/hospital/hospitalApiSlice";
+import { User, Bell, Lock, Loader2 } from "lucide-react";
 import { useUpdatePasswordMutation, useUpdateProfileMutation } from "@/features/auth/authApiSlice";
 import { selectAuthUser, updateUser } from "@/features/auth/authSlice";
 
 export default function Settings() {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
-  const { data: hospitalData, isLoading: isHospitalLoading } = useGetHospitalQuery();
-  const [updateHospital, { isLoading: isUpdating }] = useUpdateHospitalMutation();
+
   const [updatePassword, { isLoading: isPasswordUpdating }] = useUpdatePasswordMutation();
   const [updateProfile, { isLoading: isProfileUpdating }] = useUpdateProfileMutation();
-
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
-    defaultValues: {
-      name: "",
-      address: "",
-      phone: "",
-      emergency: ""
-    }
-  });
 
   const {
     register: registerPassword,
@@ -55,39 +44,12 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    if (hospitalData?.data) {
-      setValue("name", hospitalData.data.name);
-      setValue("address", hospitalData.data.address);
-      if (hospitalData.data.metadata) {
-        setValue("phone", hospitalData.data.metadata.phone || "");
-        setValue("emergency", hospitalData.data.metadata.emergency || "");
-      }
-    }
-  }, [hospitalData, setValue]);
-
-  useEffect(() => {
     if (user) {
       setProfileValue("name", user.name);
       setProfileValue("email", user.email);
     }
   }, [user, setProfileValue]);
 
-  const onSubmit = async (data: any) => {
-    try {
-      await updateHospital({
-        name: data.name,
-        address: data.address,
-        metadata: {
-          phone: data.phone,
-          emergency: data.emergency
-        }
-      }).unwrap();
-      toast.success("Hospital information updated successfully");
-    } catch (error) {
-      toast.error("Failed to update hospital information");
-      console.error(error);
-    }
-  };
 
   const onPasswordSubmit = async (data: any) => {
     if (data.newPassword !== data.confirmPassword) {
@@ -117,7 +79,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 md:mt-10 max-w-7xl mx-auto">
       <div>
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Settings</h2>
         <p className="text-muted-foreground mt-1">Manage system preferences and configurations.</p>
@@ -241,66 +203,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Building2 className="h-5 w-5 text-primary" />
-            <CardTitle>Hospital Information</CardTitle>
-          </div>
-          <CardDescription>Configure hospital details</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {isHospitalLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="hospital-name">Hospital Name</Label>
-                <Input
-                  id="hospital-name"
-                  placeholder="Central Medical Hospital"
-                  {...register("name", { required: "Hospital name is required" })}
-                />
-                {errors.name && <p className="text-sm text-destructive">{errors.name.message as string}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="hospital-address">Address</Label>
-                <Input
-                  id="hospital-address"
-                  placeholder="123 Healthcare Street"
-                  {...register("address")}
-                />
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Contact Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 234 567 8900"
-                    {...register("phone")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="emergency">Emergency Contact</Label>
-                  <Input
-                    id="emergency"
-                    type="tel"
-                    placeholder="+1 234 567 8911"
-                    {...register("emergency")}
-                  />
-                </div>
-              </div>
-              <Button type="submit" disabled={isUpdating}>
-                {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Hospital Info
-              </Button>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+
     </div>
   );
 }

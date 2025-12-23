@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Calendar, Phone, Mail, MapPin, User, Clock, FileText, Bed, Stethoscope, Building, LogOut, Search, X, UserPlus } from 'lucide-react';
+import { ArrowLeft, Calendar, Phone, Mail, MapPin, User, Clock, FileText, Stethoscope, Building, LogOut, Search, X, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -25,8 +25,6 @@ const ViewPatient = () => {
     const [admitData, setAdmitData] = useState({
         assignedDoctor: '',
         admissionType: '',
-        ward: '',
-        bedNumber: ''
     });
 
     const debouncedSearch = useDebounce(search, 500);
@@ -96,7 +94,7 @@ const ViewPatient = () => {
     };
 
     const handleAdmit = async () => {
-        if (!admitData.assignedDoctor || !admitData.ward || !admitData.bedNumber) {
+        if (!admitData.assignedDoctor) {
             toast({
                 title: "Missing Information",
                 description: "Please fill in all required fields.",
@@ -111,7 +109,7 @@ const ViewPatient = () => {
                 description: "Patient has been successfully admitted.",
             });
             setShowAdmitDialog(false);
-            setAdmitData({ assignedDoctor: '', admissionType: '', ward: '', bedNumber: '' });
+            setAdmitData({ assignedDoctor: '', admissionType: '' });
         } catch (error: any) {
             toast({
                 title: "Error Admitting Patient",
@@ -149,10 +147,10 @@ const ViewPatient = () => {
 
     const { patient } = patientResponse.data;
     const encounters = encountersResponse?.data || [];
-    const isAdmitted = !!patient.ward || !!patient.bedNumber;
+    const isAdmitted = !!patient.assignedDoctor;
 
     return (
-        <div className="container mx-auto p-6 space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 md:mt-10 max-w-7xl mx-auto">
             {/* Header Section */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center space-x-4">
@@ -168,25 +166,42 @@ const ViewPatient = () => {
                         </p>
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                     {!isAdmitted && (
-                        <Button variant="default" onClick={() => setShowAdmitDialog(true)}>
-                            <UserPlus className="mr-2 h-4 w-4" />
-                            Admit Patient
+                        <Button
+                            variant="default"
+                            onClick={() => setShowAdmitDialog(true)}
+                            className="flex-1 sm:flex-none min-w-0 px-3 py-2 sm:px-4 sm:py-2 shadow-md hover:shadow-lg transition-all"
+                        >
+                            <UserPlus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline whitespace-nowrap">Admit Patient</span>
                         </Button>
                     )}
                     {isAdmitted && (
-                        <Button variant="destructive" onClick={handleDischarge} disabled={isDischarging}>
-                            <LogOut className="mr-2 h-4 w-4" />
-                            {isDischarging ? "Discharging..." : "Discharge Patient"}
+                        <Button
+                            variant="destructive"
+                            onClick={handleDischarge}
+                            disabled={isDischarging}
+                            className="flex-1 sm:flex-none min-w-0 px-3 py-2 sm:px-4 sm:py-2 shadow-md hover:shadow-lg transition-all"
+                        >
+                            <LogOut className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline whitespace-nowrap">{isDischarging ? "Discharging..." : "Discharge Patient"}</span>
                         </Button>
                     )}
-                    <Button variant="outline" onClick={() => navigate(`/patients/${id}/add-encounter`)}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        Add Encounter
+                    <Button
+                        variant="outline"
+                        onClick={() => navigate(`/patients/${id}/add-encounter`)}
+                        className="flex-1 sm:flex-none min-w-0 px-3 py-2 sm:px-4 sm:py-2 shadow-sm hover:shadow-md transition-all border-2"
+                    >
+                        <FileText className="h-4 w-4 sm:mr-2" />
+                        <span className="hidden sm:inline whitespace-nowrap">Add Encounter</span>
                     </Button>
-                    <Button onClick={() => navigate(`/edit-patient/${patient._id}`)}>
-                        Edit Patient
+                    <Button
+                        onClick={() => navigate(`/edit-patient/${patient._id}`)}
+                        className="flex-1 sm:flex-none min-w-0 px-3 py-2 sm:px-4 sm:py-2 shadow-sm hover:shadow-md transition-all"
+                    >
+                        <span className="hidden sm:inline whitespace-nowrap">Edit Patient</span>
+                        <span className="sm:hidden">Edit</span>
                     </Button>
                 </div>
             </div>
@@ -265,24 +280,6 @@ const ViewPatient = () => {
                                     <div>
                                         <p className="text-sm font-medium text-muted-foreground">Assigned Doctor</p>
                                         <p className="text-sm font-semibold">{patient.assignedDoctor || 'N/A'}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <div className="bg-green-100 p-2 rounded-full">
-                                        <Building className="h-4 w-4 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-muted-foreground">Ward</p>
-                                        <p className="text-sm font-semibold">{patient.ward || 'N/A'}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center space-x-3">
-                                    <div className="bg-green-100 p-2 rounded-full">
-                                        <Bed className="h-4 w-4 text-green-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-muted-foreground">Bed Number</p>
-                                        <p className="text-sm font-semibold">{patient.bedNumber || 'N/A'}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">
@@ -466,24 +463,6 @@ const ViewPatient = () => {
                                 value={admitData.admissionType}
                                 onChange={(e) => setAdmitData({ ...admitData, admissionType: e.target.value })}
                                 placeholder="Emergency, Elective, etc."
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="ward">Ward *</Label>
-                            <Input
-                                id="ward"
-                                value={admitData.ward}
-                                onChange={(e) => setAdmitData({ ...admitData, ward: e.target.value })}
-                                placeholder="ICU, General, etc."
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="bedNumber">Bed Number *</Label>
-                            <Input
-                                id="bedNumber"
-                                value={admitData.bedNumber}
-                                onChange={(e) => setAdmitData({ ...admitData, bedNumber: e.target.value })}
-                                placeholder="A-101"
                             />
                         </div>
                     </div>

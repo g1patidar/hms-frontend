@@ -188,48 +188,6 @@ export default function EditPatient() {
                             />
                         </div>
 
-                        <div className="border-t pt-4 mt-4">
-                            <h3 className="text-lg font-medium mb-4">Admission Details</h3>
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label htmlFor="assignedDoctor">Assigned Doctor</Label>
-                                    <Input
-                                        id="assignedDoctor"
-                                        value={formData.assignedDoctor}
-                                        onChange={(e) => handleChange("assignedDoctor", e.target.value)}
-                                        placeholder="Dr. Name"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="admissionType">Admission Type</Label>
-                                    <Input
-                                        id="admissionType"
-                                        value={formData.admissionType}
-                                        onChange={(e) => handleChange("admissionType", e.target.value)}
-                                        placeholder="Emergency, Elective, etc."
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="ward">Ward</Label>
-                                    <Input
-                                        id="ward"
-                                        value={formData.ward}
-                                        onChange={(e) => handleChange("ward", e.target.value)}
-                                        placeholder="Ward Name/Number"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="bedNumber">Bed Number</Label>
-                                    <Input
-                                        id="bedNumber"
-                                        value={formData.bedNumber}
-                                        onChange={(e) => handleChange("bedNumber", e.target.value)}
-                                        placeholder="Bed Number"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
                             <Button type="submit" className="flex-1" disabled={isUpdating}>
                                 <Save className="h-4 w-4 mr-2" />
